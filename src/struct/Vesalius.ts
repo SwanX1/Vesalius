@@ -4,11 +4,13 @@ import { CoreModule } from '../modules/core/CoreModule';
 import { LocalizationManager } from '../util/LocalizationManager';
 import { Logger } from '../util/Logger';
 import { CommandManager } from './CommandManager';
+import { ModuleConfig } from './Module';
 import { ModuleManager } from './ModuleManager';
 
 export interface VesaliusOptions extends ClientOptions {
   prefix: string;
   logger?: Logger;
+  modules: { [module_id: string]: ModuleConfig; };
 }
 
 export class Vesalius extends Client {
@@ -53,7 +55,7 @@ export class Vesalius extends Client {
 
     this.moduleManager = new ModuleManager(this);
     this.moduleManager.loadModule(
-      new CoreModule(this),
+      new CoreModule(this, options.modules['core']),
     );
   }
 

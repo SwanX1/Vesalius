@@ -3,10 +3,12 @@ import { createWriteStream, existsSync, lstatSync, mkdirSync, readFileSync } fro
 import * as json5 from 'json5';
 import { coloredLog, getLoggerLevelName, Logger, LoggerLevel } from './util/Logger';
 import { Vesalius } from './struct/Vesalius';
+import { ModuleConfig } from './struct/Module';
 
 interface Config {
   defaultPrefix: string;
   logLevel: LoggerLevel;
+  modules: { [module_id: string]: ModuleConfig; };
   discord: {
     public_key: string;
     application_id: string;
@@ -48,9 +50,15 @@ const logger = new Logger({
   ]
 });
 
+if (!config.modules['core'].enabled) {
+  logger.fatal(chalk`Module {yellow 'core'} cannot be disabled!`);
+  process.exit(1);
+}
+
 const client: Vesalius = new Vesalius({
   prefix: config.defaultPrefix,
   logger,
+  modules: config.modules,
 });
 
 client.login(config.discord.bot_token);

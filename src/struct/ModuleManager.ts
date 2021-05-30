@@ -14,11 +14,13 @@ export class ModuleManager {
   public loadModule(...modules: Module[]): void {
     modules.filter(m => m instanceof Module).forEach(m => {
       if (this.modules.has(m.id)) {
-        this.client.logger.warn(chalk`Module with id {yellow '${m.id}'} already loaded, skipping...`);
-        return;
+        this.client.logger.warn(chalk`[ModuleManager] Module {yellow '${m.id}'} already loaded, skipping...`);
+      } else if (!m.enabled) {
+        this.client.emit('debug', chalk`[ModuleManager] Module {yellow '${m.id}'} is disabled, skipping...`);
+      } else {
+        this.client.emit('debug', chalk`[ModuleManager] Registering module {yellow '${m.id}'}`);
+        this.modules.set(m.id, m);
       }
-      this.client.emit('debug', chalk`[ModuleManager] Registering module {yellow '${m.id}'}`);
-      this.modules.set(m.id, m);
     });
 
     this.modules.forEach(m => {

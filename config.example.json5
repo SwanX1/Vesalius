@@ -10,6 +10,13 @@
     // 4: FATAL
   logLevel: 1,
 
+  // Module specific configs
+  modules: {
+    core: {
+      enabled: true, // Cannot be disabled for module 'core'
+    },
+  },
+
   // Discord API related settings
   discord: {
     // Public key of the discord application
