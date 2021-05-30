@@ -1,3 +1,4 @@
+import chalk from 'chalk';
 import { DMChannel, Message, NewsChannel, PermissionString, TextChannel } from 'discord.js';
 import { ParsedArgs } from '../util/ParsedArgs';
 import { Vesalius } from './Vesalius';
@@ -14,9 +15,9 @@ export abstract class Command {
   public requiredPermissions: PermissionString[];
   public fetchMessage: boolean;
   public alias: string[];
-  public client: Vesalius;
 
-  constructor(public id: string, options: CommandOptions) {
+  constructor(public id: string, public client: Vesalius, options: CommandOptions) {
+    this.client.emit('debug', chalk`[${client.commandManager.constructor.name}] Constructing {yellow '${this.constructor.name}'}`);
     this.requiredBotPermissions = options.requiredBotPermissions ?? [];
     this.requiredPermissions = options.requiredPermissions ?? [];
     this.fetchMessage = options.fetchMessage ?? true;
@@ -32,16 +33,6 @@ export abstract class Command {
       // Message author has required permissions
       (message.channel as TextChannel | NewsChannel).permissionsFor(message.author).has(this.requiredBotPermissions)
     );
-  }
-
-  /**
-   * To be used in CommandManager.
-   * @returns true, if set client successfully; false, if client has already been set
-   */
-  public setClient(client: Vesalius): boolean {
-    if (this.client) return false;
-    this.client = client;
-    return true;
   }
 
   public abstract exec(message: Message, args: ParsedArgs): any;

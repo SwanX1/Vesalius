@@ -1,9 +1,10 @@
 import chalk from 'chalk';
 import { Client, ClientOptions } from 'discord.js';
-import { PingCommand } from '../commands/PingCommand';
-import { Logger } from '../util/Logger';
+import { CoreModule } from '../modules/core/CoreModule';
 import { LocalizationManager } from '../util/LocalizationManager';
+import { Logger } from '../util/Logger';
 import { CommandManager } from './CommandManager';
+import { ModuleManager } from './ModuleManager';
 
 export interface VesaliusOptions extends ClientOptions {
   prefix: string;
@@ -16,6 +17,7 @@ export class Vesalius extends Client {
   public defaultPrefix: string;
   public commandManager: CommandManager;
   public locale: LocalizationManager;
+  moduleManager: ModuleManager;
 
   constructor(options: VesaliusOptions) {
     super(options);
@@ -48,8 +50,10 @@ export class Vesalius extends Client {
     this.locale.readAllLocalizations();
 
     this.commandManager = new CommandManager(this);
-    this.commandManager.loadCommand(
-      new PingCommand(),
+
+    this.moduleManager = new ModuleManager(this);
+    this.moduleManager.loadModule(
+      new CoreModule(this),
     );
   }
 

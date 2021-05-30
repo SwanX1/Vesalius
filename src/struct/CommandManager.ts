@@ -7,11 +7,11 @@ import { Vesalius } from "./Vesalius";
 export class CommandManager {
   public commands: Collection<string, Command>;
   constructor(public client: Vesalius) {
-    this.client.emit('debug', '[CommandManager] Constructing command manager!');
+    this.client.emit('debug', '[CommandManager] Constructing command manager');
     this.commands = new Collection();
     this.client.emit('debug', '[CommandManager] Loading message listener');
     this.client.on('message', message => this.onMessage(message));
-    this.client.emit('debug', '[CommandManager] Done constructing!');
+    this.client.emit('debug', '[CommandManager] Done constructing');
   }
 
   public async onMessage(message: Message): Promise<void> {
@@ -31,7 +31,6 @@ export class CommandManager {
       }
       this.client.emit('debug', chalk`[CommandManager] Loading command {yellow '${command.id}'}`);
       this.commands.set(command.id, command);
-      command.setClient(this.client);
     });
   }
 }

@@ -1,9 +1,10 @@
 import { Message, MessageEmbed } from 'discord.js';
-import { Command } from '../struct/Command';
+import { Command } from '../../../struct/Command';
+import { Vesalius } from '../../../struct/Vesalius';
 
 export class PingCommand extends Command {
-  constructor() {
-    super('ping', {
+  constructor(client: Vesalius) {
+    super('ping', client, {
       alias: 'ping',
       fetchMessage: false,
       requiredBotPermissions: [ 'SEND_MESSAGES' ]
