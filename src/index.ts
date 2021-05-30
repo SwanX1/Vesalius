@@ -1,8 +1,8 @@
-import { createWriteStream, existsSync, lstatSync, mkdirSync, readFileSync } from 'fs';
-import { coloredLog, getLoggerLevelName, Logger, LoggerLevel } from './logging/Logger';
-import * as json5 from 'json5';
-import { Vesalius } from './Vesalius';
 import chalk from 'chalk';
+import { createWriteStream, existsSync, lstatSync, mkdirSync, readFileSync } from 'fs';
+import * as json5 from 'json5';
+import { coloredLog, getLoggerLevelName, Logger, LoggerLevel } from './util/Logger';
+import { Vesalius } from './struct/Vesalius';
 
 interface Config {
   defaultPrefix: string;

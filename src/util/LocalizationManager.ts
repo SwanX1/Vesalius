@@ -3,7 +3,7 @@ import fs from 'fs';
 import * as fsp from 'fs/promises';
 import { parse as parseJson5 } from 'json5';
 import path from 'path';
-import { Vesalius } from '../Vesalius';
+import { Vesalius } from '../struct/Vesalius';
 
 export class LocalizationManager {
   private localizations: Map<string, Record<string, string>> = new Map();

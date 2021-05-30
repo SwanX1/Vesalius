@@ -1,13 +1,12 @@
 import { Message, MessageEmbed } from 'discord.js';
-import { LocalizationManager } from '../util/LocalizationManager';
-import { BaseCommand } from './BaseCommand';
+import { Command } from '../struct/Command';
 
-export class PingCommand extends BaseCommand {
+export class PingCommand extends Command {
   constructor() {
     super('ping', {
       alias: 'ping',
       fetchMessage: false,
-      requiredPermissions: [ 'SEND_MESSAGES' ]
+      requiredBotPermissions: [ 'SEND_MESSAGES' ]
     });
   }
 

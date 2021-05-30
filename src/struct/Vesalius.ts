@@ -1,9 +1,9 @@
 import chalk from 'chalk';
 import { Client, ClientOptions } from 'discord.js';
-import { CommandManager } from './commands/CommandManager';
-import { PingCommand } from './commands/PingCommand';
-import { Logger } from './logging/Logger';
-import { LocalizationManager } from './util/LocalizationManager';
+import { PingCommand } from '../commands/PingCommand';
+import { Logger } from '../util/Logger';
+import { LocalizationManager } from '../util/LocalizationManager';
+import { CommandManager } from './CommandManager';
 
 export interface VesaliusOptions extends ClientOptions {
   prefix: string;

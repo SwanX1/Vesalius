@@ -1,11 +1,11 @@
-import { Collection, Message } from "discord.js";
-import { Vesalius } from "../Vesalius";
-import { ParsedArgs } from "../util/ParsedArgs";
-import { BaseCommand } from "./BaseCommand";
 import chalk from "chalk";
+import { Collection, Message } from "discord.js";
+import { ParsedArgs } from "../util/ParsedArgs";
+import { Command } from "./Command";
+import { Vesalius } from "./Vesalius";
 
 export class CommandManager {
-  public commands: Collection<string, BaseCommand>;
+  public commands: Collection<string, Command>;
   constructor(public client: Vesalius) {
     this.client.emit('debug', '[CommandManager] Constructing command manager!');
     this.commands = new Collection();
@@ -16,14 +16,14 @@ export class CommandManager {
 
   public async onMessage(message: Message): Promise<void> {
     const args: ParsedArgs = ParsedArgs.parse(message, this.client.defaultPrefix);
-    const command: BaseCommand = this.commands.find(command => command.alias.includes(args.getCommand()));
+    const command: Command = this.commands.find(command => command.alias.includes(args.getCommand()));
     if (!command) return;
     if (!command.shouldExecute(message)) return;
     if (command.fetchMessage) await message.fetch();
     command.exec(message, args);
   }
 
-  public loadCommand(...commands: BaseCommand[]): void {
+  public loadCommand(...commands: Command[]): void {
     commands.forEach(command => {
       if (this.commands.has(command.id)) {
         this.client.logger.warn(chalk`Command with id {yellow '${command.id}'} already loaded, skipping...`);

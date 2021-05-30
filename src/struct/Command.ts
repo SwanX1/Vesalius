@@ -1,19 +1,23 @@
 import { DMChannel, Message, NewsChannel, PermissionString, TextChannel } from 'discord.js';
-import { Vesalius } from '../Vesalius';
 import { ParsedArgs } from '../util/ParsedArgs';
+import { Vesalius } from './Vesalius';
+
 export interface CommandOptions {
+  requiredBotPermissions?: PermissionString[];
   requiredPermissions?: PermissionString[];
   fetchMessage?: boolean;
   alias: string | string[];
 }
 
-export abstract class BaseCommand {
+export abstract class Command {
+  public requiredBotPermissions: PermissionString[];
   public requiredPermissions: PermissionString[];
   public fetchMessage: boolean;
   public alias: string[];
   public client: Vesalius;
 
   constructor(public id: string, options: CommandOptions) {
+    this.requiredBotPermissions = options.requiredBotPermissions ?? [];
     this.requiredPermissions = options.requiredPermissions ?? [];
     this.fetchMessage = options.fetchMessage ?? true;
     this.alias = typeof options.alias === 'string' ? [options.alias] : options.alias;
@@ -21,11 +25,13 @@ export abstract class BaseCommand {
 
   public shouldExecute(message: Message): boolean {
     return (
-      // Not a DM channel
+      // Message channel is not a DM channel
       !(message.channel instanceof DMChannel) &&
-      // Has required permissions
-      (message.channel as TextChannel | NewsChannel).permissionsFor(this.client.user).has(this.requiredPermissions) 
-    )
+      // Bot has required permissions
+      (message.channel as TextChannel | NewsChannel).permissionsFor(this.client.user).has(this.requiredBotPermissions) &&
+      // Message author has required permissions
+      (message.channel as TextChannel | NewsChannel).permissionsFor(message.author).has(this.requiredBotPermissions)
+    );
   }
 
   /**
