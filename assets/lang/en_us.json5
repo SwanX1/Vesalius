@@ -1,0 +1,4 @@
+{
+  "command.ping.title": "Pong!",
+  "command.ping.description": "Bot's WebSocket latency is {{ping}}",
+}

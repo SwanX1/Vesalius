@@ -1,0 +1,23 @@
+{
+  "name": "vesalius",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "esnext": "src/index.ts",
+  "author": "SwanX1 <karliscern@gmail.com>",
+  "license": "Apache-2.0",
+  "scripts": {
+    "start": "node .",
+    "build": "tsc",
+    "build:watch": "tsc -w"
+  },
+  "dependencies": {
+    "chalk": "^4.1.0",
+    "discord.js": "^12.5.3",
+    "json5": "^2.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^14.14.37",
+    "@types/ws": "^7.4.1",
+    "typescript": "next"
+  }
+}

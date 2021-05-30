@@ -1,0 +1,27 @@
+{
+  defaultPrefix: '!',
+  
+    // A log level of 3 will show level 4 logs, however a log level of 2 will not show 1 or 0.
+    // Log levels:
+    // 0: DEBUG
+    // 1: INFO
+    // 2: WARN
+    // 3: ERROR
+    // 4: FATAL
+  logLevel: 1,
+
+  // Discord API related settings
+  discord: {
+    // Public key of the discord application
+    public_key: '',
+
+    // Application ID
+    application_id: '',
+
+    // Client secret
+    client_secret: '',
+
+    // Bot token
+    bot_token: '',
+  }
+}
