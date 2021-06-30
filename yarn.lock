@@ -110,6 +110,11 @@ json5@^2.2.0:
   dependencies:
     minimist "^1.2.5"
 
+logerian@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/logerian/-/logerian-1.0.4.tgz#dca81a67e931a7bdf54c6caaf714e6820d8f7b23"
+  integrity sha512-KbcWG8g4PaNJQ/TDE3Q8RF563mQq9pOx1iVA56IeH7+ChQtfUWgpI7CW4IxGgveLq0roPOJSVL6Qe70kJ1JZvw==
+
 mime-db@1.47.0:
   version "1.47.0"
   resolved "https://registry.yarnpkg.com/mime-db/-/mime-db-1.47.0.tgz#8cb313e59965d3c05cfbf898915a267af46a335c"

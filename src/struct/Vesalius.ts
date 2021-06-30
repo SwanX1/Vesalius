@@ -2,7 +2,7 @@ import chalk from 'chalk';
 import { Client, ClientOptions } from 'discord.js';
 import { CoreModule } from '../modules/core/CoreModule';
 import { LocalizationManager } from '../util/LocalizationManager';
-import { Logger } from '../util/Logger';
+import { Logger } from 'logerian';
 import { CommandManager } from './CommandManager';
 import { ModuleConfig } from './Module';
 import { ModuleManager } from './ModuleManager';
