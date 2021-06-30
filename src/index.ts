@@ -1,5 +1,5 @@
 import chalk from 'chalk';
-import { createWriteStream, existsSync, lstatSync, mkdirSync, readFileSync } from 'fs';
+import { createWriteStream, existsSync, lstatSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
 import * as json5 from 'json5';
 import { coloredLog, getLoggerLevelName, Logger, LoggerLevel } from './util/Logger';
 import { Vesalius } from './struct/Vesalius';
@@ -8,6 +8,7 @@ import { ModuleConfig } from './struct/Module';
 interface Config {
   defaultPrefix: string;
   logLevel: LoggerLevel;
+  disableHeartbeatLogs: boolean;
   modules: { [module_id: string]: ModuleConfig; };
   discord: {
     public_key: string;
@@ -28,6 +29,18 @@ if (!process.cwd().endsWith('dist')) {
   process.chdir('dist');
 }
 
+if (!existsSync('../config.json5')) {
+  console.warn(coloredLog(LoggerLevel.WARN) + 'Config file doesn\'t exist');
+  console.warn(coloredLog(LoggerLevel.WARN) + 'Creating new config from template');
+  if (existsSync('../config.example.json5')) {
+    // Strips formatting, that's why we can't use copyFileSync
+    writeFileSync('../config.json5', json5.stringify(json5.parse(readFileSync('../config.example.json5').toString()), null, 2));
+  } else {
+    console.error(coloredLog(LoggerLevel.FATAL) + chalk`Can't create config: {yellow 'config.example.json5'} doesn't exist`);
+  }
+  process.exit(0);
+}
+
 const config: Config = json5.parse(readFileSync('../config.json5').toString());
 
 const logger = new Logger({
@@ -43,9 +56,10 @@ const logger = new Logger({
       prefix: (level: LoggerLevel) => `[${new Date().toISOString()}] [${getLoggerLevelName(level)}] `,
     },
     {
-      level: config.logLevel,
+      level: config.logLevel ?? LoggerLevel.DEBUG,
       stream: process.stdout,
       prefix: coloredLog,
+      filter: (message, messageStripped) => config.disableHeartbeatLogs && !/^\[\d\d\:\d\d\:\d\d\] \[DEBUG\] \[WS => Shard \d+\] (\[HeartbeatTimer\] Sending a heartbeat.|Heartbeat acknowledged, latency of \d+ms.)$/.test(messageStripped.toString()),
     },
   ]
 });
@@ -56,7 +70,7 @@ if (!config.modules['core'].enabled) {
 }
 
 const client: Vesalius = new Vesalius({
-  prefix: config.defaultPrefix,
+  prefix: config.defaultPrefix ?? '!',
   logger,
   modules: config.modules,
 });

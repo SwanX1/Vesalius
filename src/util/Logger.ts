@@ -2,11 +2,13 @@ import chalk from 'chalk';
 import fs from 'fs';
 
 export type PrefixPredicate = (level: LoggerLevel) => string;
+export type FilterPredicate = (data: string | Uint8Array, ansiFreeData: string | Uint8Array) => boolean;
 
 export interface LoggerOutput {
   stream: NodeJS.WritableStream;
   level: LoggerLevel;
   prefix?: PrefixPredicate;
+  filter?: FilterPredicate;
 }
 
 export interface LoggerOptions {
@@ -114,15 +116,16 @@ export class Logger {
           s += output.prefix(level);
         }
         s += data;
-        s += '\n';
-        if (output.stream instanceof fs.WriteStream) {
-          // Remove ansi codes
-          output.stream.write(
-            s.replace(
-              /[\u001B\u009B][[\]()#;?]*(?:(?:(?:[a-zA-Z\d]*(?:;[-a-zA-Z\d\/#&.:=?%@~_]*)*)?\u0007)|(?:(?:\d{1,4}(?:;\d{0,4})*)?[\dA-PR-TZcf-ntqry=><~]))/g,
-              ''
-            )
+        // Remove ansi codes
+        let sStripped = s.replace(
+          /[\u001B\u009B][[\]()#;?]*(?:(?:(?:[a-zA-Z\d]*(?:;[-a-zA-Z\d\/#&.:=?%@~_]*)*)?\u0007)|(?:(?:\d{1,4}(?:;\d{0,4})*)?[\dA-PR-TZcf-ntqry=><~]))/g,
+          ''
           );
+        if (typeof output.filter === 'function' && !output.filter(s, sStripped)) continue;
+        s += '\n';
+        sStripped += '\n';
+        if (output.stream instanceof fs.WriteStream) {
+          output.stream.write(sStripped);
         } else {
           output.stream.write(s);
         }

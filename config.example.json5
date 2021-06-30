@@ -9,6 +9,8 @@
     // 3: ERROR
     // 4: FATAL
   logLevel: 1,
+  // DEBUG LOGS ONLY: Disables heartbeat logs
+  disableHeartbeatLogs: true,
 
   // Module specific configs
   modules: {
