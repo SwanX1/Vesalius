@@ -1,8 +1,8 @@
-import chalk from "chalk";
-import { Collection, Message } from "discord.js";
-import { ParsedArgs } from "../util/ParsedArgs";
-import { Command } from "./Command";
-import { Vesalius } from "./Vesalius";
+import chalk from 'chalk';
+import { Collection, Message } from 'discord.js';
+import { ParsedArgs } from '../util/ParsedArgs';
+import { Command } from './Command';
+import { Vesalius } from './Vesalius';
 
 export class CommandManager {
   public commands: Collection<string, Command>;
@@ -16,7 +16,7 @@ export class CommandManager {
 
   public async onMessage(message: Message): Promise<void> {
     const args: ParsedArgs = ParsedArgs.parse(message, this.client.defaultPrefix);
-    const command: Command = this.commands.find(command => command.alias.includes(args.getCommand()));
+    const command: Command = this.commands.find(command => command.alias.includes(args.command));
     if (!command) return;
     if (!command.shouldExecute(message)) return;
     if (command.fetchMessage) await message.fetch();

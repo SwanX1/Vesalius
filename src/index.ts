@@ -2,8 +2,8 @@ import chalk from 'chalk';
 import { createWriteStream, existsSync, lstatSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
 import * as json5 from 'json5';
 import { coloredLog, getLoggerLevelName, Logger, LoggerLevel } from 'logerian';
-import { Vesalius } from './struct/Vesalius';
 import { ModuleConfig } from './struct/Module';
+import { Vesalius } from './struct/Vesalius';
 
 interface Config {
   defaultPrefix: string;

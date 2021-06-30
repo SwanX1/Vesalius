@@ -1,6 +1,6 @@
-import { PingCommand } from './commands/PingCommand';
 import { Module, ModuleConfig } from '../../struct/Module';
 import { Vesalius } from '../../struct/Vesalius';
+import { PingCommand } from './commands/PingCommand';
 
 export class CoreModule extends Module {
   constructor(client: Vesalius, config: ModuleConfig) {

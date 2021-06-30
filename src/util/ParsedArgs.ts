@@ -1,4 +1,4 @@
-import { Message } from "discord.js";
+import { Message } from 'discord.js';
 
 interface RawParsedArgs {
   prefix: string;
@@ -10,29 +10,40 @@ interface RawParsedArgs {
 }
 
 export class ParsedArgs {
-  private command: string;
-  private prefix: string;
-  private args: string[];
-  private rawArgs: string;
+  private _command: string;
+  private _prefix: string;
+  private _args: string[];
+  private _rawArgs: string;
 
   private constructor({ prefix, command, args, rawArgs }: RawParsedArgs) {
-    this.prefix = prefix;
-    this.command = command;
-    this.args = args;
-    this.rawArgs = rawArgs;
+    this._prefix = prefix;
+    this._command = command;
+    this._args = args;
+    this._rawArgs = rawArgs;
   }
 
-  public getCommand(): string {
-    return this.command;
+  /** The first thing after the prefix */
+  public get command(): string {
+    return this._command;
   }
-  public getPrefix(): string {
-    return this.prefix;
+
+  public get prefix(): string {
+    return this._prefix;
   }
-  public getArgs(): string[] {
-    return this.args;
+
+  /** Shorthand for `args[0]` */
+  public get subcommand(): string {
+    return this.args[0];
   }
-  public getRawArgs(): string {
-    return this.rawArgs;
+
+  /** Arguments do not include the command */
+  public get args(): string[] {
+    return this._args;
+  }
+
+  /** Raw arguments do not include the command */
+  public get rawArgs(): string {
+    return this._rawArgs;
   }
 
   public static parse(message: Message, prefix: string): ParsedArgs {
