@@ -1,5 +1,6 @@
 import { Module, ModuleConfig } from '../../struct/Module';
 import { Vesalius } from '../../struct/Vesalius';
+import { HelpCommand } from './commands/HelpCommand';
 import { PingCommand } from './commands/PingCommand';
 
 export class CoreModule extends Module {
@@ -11,6 +12,7 @@ export class CoreModule extends Module {
     this.client.emit('debug', '[CoreModule] Loading commands...');
     this.client.commandManager.loadCommand(
       new PingCommand(this.client),
+      new HelpCommand(this.client),
     );
   }
 }

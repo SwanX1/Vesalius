@@ -1,4 +1,36 @@
 {
+  // Ping command
   "command.ping.title": "Pong!",
-  "command.ping.description": "Bot's WebSocket latency is {{ping}}",
+  "command.ping.description": "Bot's WebSocket latency is {ping}",
+  "command.ping.info.name": "Ping",
+  "command.ping.info.description": " \n\
+    Sends the bot's WebSocket ping to Discord servers. \n\
+    This value doesn't impact you, this command is used for debugging purposes. \n\
+  ",
+  "command.ping.info.summary": "Shows the bot's ping!",
+  "command.ping.info.usage": "`{prefix}ping`",
+
+  // Help command
+  "command.help.default.quick_usage.title": "Quick Usage",
+  "command.help.default.quick_usage.description": " \n\
+    To get to a specific command faster, do `{prefix}help <command>`! \n\
+    Learn more by doing `{prefix}help help`. \n\
+  ",
+  "command.help.default.title": "List of commands",
+  "command.help.default.footer": "Page {counter} of {size}",
+  "command.help.fields.help": "Help",
+  "command.help.fields.description": "Description",
+  "command.help.fields.aliases": "Aliases",
+  "command.help.fields.usage": "Usage",
+  "command.help.error.invalid_command.description": "The command you entered couldn't be found.",
+  "command.help.info.name": "Help",
+  "command.help.info.description": " \n\
+    Lists commands and shows usage for them. \n\
+    Note: This feature is still WIP. \n\
+  ",
+  "command.help.info.summary": "Lists commands and shows usage for them.",
+  "command.help.info.usage": " \n\
+    `{prefix}help` - Shows a list of commands and their summaries. \n\
+    `{prefix}help <command>` - Shows a specified command's description and usage. \n\
+  ",
 }

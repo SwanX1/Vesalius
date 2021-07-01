@@ -1,5 +1,6 @@
 import chalk from 'chalk';
 import { DMChannel, Message, NewsChannel, PermissionString, TextChannel } from 'discord.js';
+import { HelpInfo } from '../modules/core/commands/HelpCommand';
 import { ParsedArgs } from '../util/ParsedArgs';
 import { Vesalius } from './Vesalius';
 
@@ -8,6 +9,7 @@ export interface CommandOptions {
   requiredPermissions?: PermissionString[];
   fetchMessage?: boolean;
   alias: string | string[];
+  help: HelpInfo;
 }
 
 export abstract class Command {
@@ -15,6 +17,7 @@ export abstract class Command {
   public requiredPermissions: PermissionString[];
   public fetchMessage: boolean;
   public alias: string[];
+  public help: HelpInfo;
 
   constructor(public id: string, public client: Vesalius, options: CommandOptions) {
     this.client.emit('debug', chalk`[${client.commandManager.constructor.name}] Constructing {yellow '${this.constructor.name}'}`);
@@ -22,6 +25,7 @@ export abstract class Command {
     this.requiredPermissions = options.requiredPermissions ?? [];
     this.fetchMessage = options.fetchMessage ?? true;
     this.alias = typeof options.alias === 'string' ? [options.alias] : options.alias;
+    this.help = options.help;
   }
 
   public shouldExecute(message: Message): boolean {
