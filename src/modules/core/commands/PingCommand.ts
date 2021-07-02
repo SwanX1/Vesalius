@@ -10,10 +10,10 @@ export class PingCommand extends Command {
       fetchMessage: false,
       requiredBotPermissions: [ 'SEND_MESSAGES' ],
       help: {
-        name: locale => stripIndents(this.client.locale.getLocalization('en_us', 'command.ping.info.name')),
-        description: locale => stripIndents(this.client.locale.getLocalization('en_us', 'command.ping.info.description')),
-        summary: locale => stripIndents(this.client.locale.getLocalization('en_us', 'command.ping.info.summary')),
-        usage: locale => stripIndents(this.client.locale.getLocalization('en_us', 'command.ping.info.usage'))
+        name: locale => stripIndents(this.client.locale.getLocalization(locale, 'command.ping.info.name')),
+        description: locale => stripIndents(this.client.locale.getLocalization(locale, 'command.ping.info.description')),
+        summary: locale => stripIndents(this.client.locale.getLocalization(locale, 'command.ping.info.summary')),
+        usage: locale => stripIndents(this.client.locale.getLocalization(locale, 'command.ping.info.usage'))
       }
     });
   }

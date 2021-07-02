@@ -19,10 +19,10 @@ export class HelpCommand extends Command {
       fetchMessage: false,
       requiredBotPermissions: [ 'SEND_MESSAGES', 'ADD_REACTIONS' ],
       help: {
-        name: locale => stripIndents(this.client.locale.getLocalization('en_us', 'command.help.info.name')),
-        description: locale => stripIndents(this.client.locale.getLocalization('en_us', 'command.help.info.description')),
-        summary: locale => stripIndents(this.client.locale.getLocalization('en_us', 'command.help.info.summary')),
-        usage: locale => stripIndents(this.client.locale.getLocalization('en_us', 'command.help.info.usage'))
+        name: locale => stripIndents(this.client.locale.getLocalization(locale, 'command.help.info.name')),
+        description: locale => stripIndents(this.client.locale.getLocalization(locale, 'command.help.info.description')),
+        summary: locale => stripIndents(this.client.locale.getLocalization(locale, 'command.help.info.summary')),
+        usage: locale => stripIndents(this.client.locale.getLocalization(locale, 'command.help.info.usage'))
       }
     });
   }
