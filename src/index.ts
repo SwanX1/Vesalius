@@ -47,12 +47,7 @@ const logger = new Logger({
   streams: [
     {
       level: LoggerLevel.DEBUG,
-      stream: createWriteStream('../log/debug.txt'),
-      prefix: (level: LoggerLevel) => `[${new Date().toISOString()}] [${getLoggerLevelName(level)}] `,
-    },
-    {
-      level: LoggerLevel.INFO,
-      stream: createWriteStream('../log/latest.txt'),
+      stream: createWriteStream('../log/' + Date.now() + '-debug.txt'),
       prefix: (level: LoggerLevel) => `[${new Date().toISOString()}] [${getLoggerLevelName(level)}] `,
     },
     {
