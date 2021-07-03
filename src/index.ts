@@ -79,3 +79,10 @@ client.on('ready', () => {
     logger.warn('Application ID in config doesn\'t match the actual ID of the bot!');
   }
 });
+
+for (const signal of ["SIGABRT", "SIGHUP", "SIGINT", "SIGQUIT", "SIGTERM", "SIGUSR1", "SIGUSR2", "SIGBREAK"]) {
+  process.on(signal, () => {
+    logger.info('Exiting...');
+    client.destroy();
+  });
+}
