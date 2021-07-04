@@ -28,6 +28,8 @@ if ! $prerequisites_met; then exit 1; fi
 
 echo "$ yarn install"
 if ! yarn --silent install; then exit 1; fi
+echo "Removing old build files..."
+rm -r dist
 echo "$ yarn build"
 if ! yarn --silent build; then exit 1; fi
 
