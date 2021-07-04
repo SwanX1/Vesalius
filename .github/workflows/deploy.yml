@@ -8,15 +8,21 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
+      - name: Get temporary file
+        id: mktemp
+        run: echo "::set-output name=tempfile::`mktemp`"
+      - name: Write SSH key to temporary file 
+        run: echo "${{ secrets.SSH_KEY }}" > ${{ steps.mktemp.outputs.tempfile }}
       - name: Deploy
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
-          script_stop: true
-          script: |
+        run: |
+          ssh \
+          -l ${{ secrets.SSH_USER }} \
+          -i ${{ steps.mktemp.outputs.tempfile }} \
+          -o "StrictHostKeyChecking=accept-new" \
+          ${{ secrets.SSH_HOST }} \
+          "
             cd ${{ secrets.PROJECT_PATH }}
             git fetch --prune --depth=1 --force --verbose origin
             git checkout --force origin/`echo '${{ github.ref }}' | sed 's/.*\///'`
             bash ./deploy.sh
+          "
