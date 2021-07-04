@@ -1,6 +1,7 @@
 import chalk from 'chalk';
 import { DMChannel, Message, NewsChannel, PermissionString, TextChannel } from 'discord.js';
 import { HelpInfo } from '../modules/core/commands/HelpCommand';
+import { ConfigSpec } from '../util/ConfigSpec';
 import { ParsedArgs } from '../util/ParsedArgs';
 import { Vesalius } from './Vesalius';
 
@@ -11,6 +12,8 @@ export interface CommandOptions {
   alias: string | string[];
   help: HelpInfo;
 }
+
+export interface CommandConfig { }
 
 export abstract class Command {
   public requiredBotPermissions: PermissionString[];
@@ -38,6 +41,10 @@ export abstract class Command {
       (message.channel as TextChannel | NewsChannel).permissionsFor(message.author).has(this.requiredBotPermissions)
     );
   }
+
+  public buildConfigSpec(spec: ConfigSpec): void { }
+  
+  public load(config: CommandConfig) { }
 
   public abstract exec(message: Message, args: ParsedArgs): any;
 }

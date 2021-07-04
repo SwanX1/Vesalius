@@ -1,33 +1,41 @@
 import chalk from 'chalk';
 import { Client, ClientOptions } from 'discord.js';
-import { Logger } from 'logerian';
+import { Logger, LoggerLevel } from 'logerian';
 import { CoreModule } from '../modules/core/CoreModule';
+import { ConfigSpec, createConfig } from '../util/ConfigSpec';
 import { LocalizationManager } from '../util/LocalizationManager';
+import { stripIndents } from '../util/Util';
 import { CommandManager } from './CommandManager';
 import { ModuleConfig } from './Module';
 import { ModuleManager } from './ModuleManager';
 
-export interface VesaliusOptions extends ClientOptions {
-  prefix: string;
-  logger?: Logger;
+export interface Config {
+  defaultPrefix: string;
+  logLevel: LoggerLevel;
+  disableHeartbeatLogs: boolean;
   modules: { [module_id: string]: ModuleConfig; };
+  discord: {
+    public_key: string;
+    application_id: string;
+    client_secret: string;
+    bot_token: string;
+  };
 }
 
 export class Vesalius extends Client {
   // @ts-ignore
   public logger: Logger = console;
-  public defaultPrefix: string;
+  public defaultPrefix: string = '?';
   public commandManager: CommandManager;
   public locale: LocalizationManager;
   moduleManager: ModuleManager;
+  public configSpec: ConfigSpec;
 
-  constructor(options: VesaliusOptions) {
+  constructor(options: ClientOptions, logger?: Logger) {
     super(options);
 
-    this.defaultPrefix = options.prefix;
-
     //#region 
-    if (options.logger) this.setLogger(options.logger);
+    if (logger) this.setLogger(logger);
     this.on('debug', (message: string) => {
       const m: string[] = [];
       let s = message.trim();
@@ -54,13 +62,45 @@ export class Vesalius extends Client {
     this.commandManager = new CommandManager(this);
 
     this.moduleManager = new ModuleManager(this);
-    this.moduleManager.loadModule(
-      new CoreModule(this, options.modules['core']),
-    );
+    
+    const coreModule = new CoreModule(this);
+    this.moduleManager.addModule(coreModule);
+
+    const discordConfigSpec = new ConfigSpec()
+      .addConfig('public_key', createConfig('').addComment('Public key of the discord application'))
+      .addConfig('application_id', createConfig('').addComment('Application ID'))
+      .addConfig('client_secret', createConfig('').addComment('Client secret'))
+      .addConfig('bot_token', createConfig('').addComment('Bot token'));
+
+    const moduleConfigSpec = new ConfigSpec();
+    this.moduleManager.buildConfigSpec(moduleConfigSpec);
+    
+    this.configSpec = new ConfigSpec()
+      .addConfig('defaultPrefix', createConfig('!'))
+      .addConfig('logLevel',
+        createConfig(1)
+          .addComment(stripIndents`
+            A log level of 3 will show level 4 logs, however a log level of 2 will not show 1 or 0.
+            Log levels:
+            0: DEBUG
+            1: INFO
+            2: WARN
+            3: ERROR
+            4: FATAL
+          `)
+      )
+      .addConfig('disableHeartbeatLogs', createConfig(true).addComment('DEBUG LOGS ONLY: Disables heartbeat logs'))
+      .addConfig('modules', createConfig(moduleConfigSpec).addComment('Module specific configs'))
+      .addConfig('discord', createConfig(discordConfigSpec).addComment('Discord API related settings'));
   }
 
   setLogger(logger: Logger): this {
     this.logger = logger;
     return this;
+  }
+
+  load(config: Config): void {
+    this.defaultPrefix = config.defaultPrefix ?? this.defaultPrefix;
+    this.moduleManager.loadModules(config.modules);
   }
 }

@@ -2,21 +2,7 @@ import chalk from 'chalk';
 import { createWriteStream, existsSync, lstatSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
 import * as json5 from 'json5';
 import { coloredLog, getLoggerLevelName, Logger, LoggerLevel } from 'logerian';
-import { ModuleConfig } from './struct/Module';
-import { Vesalius } from './struct/Vesalius';
-
-interface Config {
-  defaultPrefix: string;
-  logLevel: LoggerLevel;
-  disableHeartbeatLogs: boolean;
-  modules: { [module_id: string]: ModuleConfig; };
-  discord: {
-    public_key: string;
-    application_id: string;
-    client_secret: string;
-    bot_token: string;
-  };
-}
+import { Config, Vesalius } from './struct/Vesalius';
 
 if (!existsSync('log')) {
   mkdirSync('log');
@@ -29,19 +15,31 @@ if (!process.cwd().endsWith('dist')) {
   process.chdir('dist');
 }
 
-if (!existsSync('../config.json5')) {
-  console.warn(coloredLog(LoggerLevel.WARN) + 'Config file doesn\'t exist');
-  console.warn(coloredLog(LoggerLevel.WARN) + 'Creating new config from template');
-  if (existsSync('../config.example.json5')) {
-    // Strips formatting, that's why we can't use copyFileSync
-    writeFileSync('../config.json5', json5.stringify(json5.parse(readFileSync('../config.example.json5').toString()), null, 2));
-  } else {
-    console.error(coloredLog(LoggerLevel.FATAL) + chalk`Can't create config: {yellow 'config.example.json5'} doesn't exist`);
-  }
+if (process.argv.slice(2).includes('--generate-config') || !existsSync('../config.json5')) {
+  const logger = new Logger({
+    streams: [
+      {
+        level: LoggerLevel.INFO,
+        stream: process.stdout,
+        prefix: coloredLog,
+      },
+    ]
+  });
+  logger.info('Generating config...');
+
+
+  const client: Vesalius = new Vesalius({}, logger);
+
+  logger.info('Config generated, writing to file!');
+
+  writeFileSync('../config.json5', client.configSpec.getJson5());
+
+  logger.info(chalk`{bold Please go and fill out the {green 'config.json5'} file.}`);
   process.exit(0);
 }
 
-const config: Config = json5.parse(readFileSync('../config.json5').toString());
+let configString = readFileSync('../config.json5').toString();
+const config: Config = json5.parse(configString);
 
 const logger = new Logger({
   streams: [
@@ -59,16 +57,16 @@ const logger = new Logger({
   ]
 });
 
-if (!config.modules['core'].enabled) {
-  logger.fatal(chalk`Module {yellow 'core'} cannot be disabled!`);
-  process.exit(1);
+const client: Vesalius = new Vesalius({}, logger);
+
+if (configString !== client.configSpec.getJson5(config)) {
+  configString = client.configSpec.getJson5(config);
+  writeFileSync('../config.json5', configString);
+  logger.warn('Your config was updated, please check if everything works.');
+  Object.assign(config, json5.parse(configString));
 }
 
-const client: Vesalius = new Vesalius({
-  prefix: config.defaultPrefix ?? '!',
-  logger,
-  modules: config.modules,
-});
+client.load(config);
 
 client.login(config.discord.bot_token);
 
