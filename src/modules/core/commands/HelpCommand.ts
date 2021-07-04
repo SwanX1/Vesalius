@@ -39,7 +39,7 @@ export class HelpCommand extends Command {
 
         message.channel.send(
           new MessageEmbed()
-            .setTitle(`${this.client.locale.getLocalization('en_us', 'command.help.fields.help')}: ${help.name}`)
+            .setTitle(`${this.client.locale.getLocalization('en_us', 'command.help.fields.command')}: ${help.name}`)
             .addFields(
               {
                 name: this.client.locale.getLocalization('en_us', 'command.help.fields.description'),
@@ -108,6 +108,7 @@ export class HelpCommand extends Command {
 
       const menu = new MessageMenu(message, {
         pages,
+        timeout: 60000,
         reactions: [
           {
             action: 'previousPage',

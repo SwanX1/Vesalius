@@ -18,7 +18,7 @@
   ",
   "command.help.default.title": "List of commands",
   "command.help.default.footer": "Page {counter} of {size}",
-  "command.help.fields.help": "Help",
+  "command.help.fields.command": "Command",
   "command.help.fields.description": "Description",
   "command.help.fields.aliases": "Aliases",
   "command.help.fields.usage": "Usage",
