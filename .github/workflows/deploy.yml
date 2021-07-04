@@ -18,5 +18,5 @@ jobs:
           script: |
             cd ${{ secrets.PROJECT_PATH }}
             git fetch --prune --depth=1 --force --verbose origin
-            git checkout --force origin/stable
+            git checkout --force origin/`echo '${{ github.ref }}' | sed 's/.*\///'`
             bash ./deploy.sh
