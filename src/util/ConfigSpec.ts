@@ -45,8 +45,6 @@ export class ConfigSpec {
       for (const [key, value] of existing.configs) {
         existingObj[key] = value;
       }
-
-      console.log({ obj, existingObj });
       
       let result = '{';
 
