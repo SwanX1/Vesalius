@@ -8,7 +8,6 @@ export interface InfoConfig extends CommandConfig {
   github_name: string;
   github_link: string;
   issue_tracker: string;
-  invite_permissions: string;
 }
 
 export class InfoCommand extends Command {
@@ -29,7 +28,7 @@ export class InfoCommand extends Command {
   }
 
   public async exec(message: Message): Promise<void> {
-    const inviteLink = `https://discord.com/oauth2/authorize?client_id=${this.client.user.id}&scope=bot&permissions=${this.config.invite_permissions}`;
+    const inviteLink = `https://discord.com/oauth2/authorize?client_id=${this.client.user.id}&scope=bot&permissions=1879419990`;
     message.channel.send(
       new MessageEmbed()
         .setTitle(this.client.locale.getLocalization('en_us', 'command.info.title'))
@@ -81,6 +80,5 @@ export class InfoCommand extends Command {
     spec.addConfig('github_name', 'SwanX1/Vesalius');
     spec.addConfig('github_link', 'https://github.com/SwanX1/Vesalius');
     spec.addConfig('issue_tracker', 'https://github.com/SwanX1/Vesalius/issues');
-    spec.addConfig('invite_permissions', '1879419990');
   }
 }
