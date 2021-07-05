@@ -50,4 +50,23 @@
   "command.info.fields.invite.title": "Invite Link",
   "command.info.fields.invite.content": "Click here",
   "command.info.fields.node_version": "Running on NodeJS version {version}",
+
+  // Eval command
+  "command.eval.processing": "Processing...",
+  "command.eval.success.title": "Done in {ms}ms",
+  "command.eval.success.field": "Returns",
+  "command.eval.error.title": "Error in {ms}ms",
+  "command.eval.error.field": "Error",
+  "command.eval.info.name": "Eval",
+  "command.eval.info.description": "Runs provided code via eval.\nThis is a restricted command, cannot be viewed with the help command.",
+  "command.eval.info.summary": "Runs provided code via eval.",
+  "command.eval.info.usage": "`{prefix}eval <code>`",
+
+  // Reload Locale command
+  "command.reload-locale.processing": "Reloading...",
+  "command.reload-locale.done": "Reloaded all localizations {ms}ms!",
+  "command.reload-locale.info.name": "reload-locale",
+  "command.reload-locale.info.description": "Reloads all localizations.\nThis is a restricted command, cannot be viewed with the help command.",
+  "command.reload-locale.info.summary": "Reloads all localizations.",
+  "command.reload-locale.info.usage": "`{prefix}reload-locale`",
 }

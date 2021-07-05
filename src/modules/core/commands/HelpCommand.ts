@@ -10,6 +10,7 @@ export interface HelpInfo {
   summary: string | ((locale: string) => string);
   description: string | ((locale: string) => string);
   usage: string | ((locale: string) => string);
+  hide?: boolean;
 }
 
 export class HelpCommand extends Command {
@@ -29,10 +30,11 @@ export class HelpCommand extends Command {
 
   public async exec(message: Message, args: ParsedArgs): Promise<void> {
     if (args.subcommand) {
-      const command = this.client.commandManager.commands.get(args.subcommand);
+      let command = this.client.commandManager.commands.get(args.subcommand);
+      if (command.help.hide) command = undefined;
       if (command) {
         const help = copyObject(command.help);
-        for (const prop of ['description', 'name', 'summary', 'usage'] as (keyof HelpInfo)[]) {
+        for (const prop of ['description', 'name', 'summary', 'usage'] as (Exclude<keyof HelpInfo, 'hide'>)[]) {
           const value = help[prop];
           help[prop] = typeof value === 'function' ? value('en_us') : value;
         }
@@ -64,7 +66,7 @@ export class HelpCommand extends Command {
         );
       }
     } else {
-      const commands = this.client.commandManager.commands;
+      const commands = this.client.commandManager.commands.filter(command => !command.help.hide);
       const pages: MenuPageResolvable[] = [
         new MessageEmbed()
           .setTitle(this.client.locale.getLocalization('en_us', 'command.help.default.quick_usage.title'))

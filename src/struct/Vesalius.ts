@@ -2,6 +2,7 @@ import chalk from 'chalk';
 import { Client, ClientOptions } from 'discord.js';
 import { Logger, LoggerLevel } from 'logerian';
 import { CoreModule } from '../modules/core/CoreModule';
+import { DebugModule } from '../modules/debug/DebugModule';
 import { ConfigSpec, createConfig } from '../util/ConfigSpec';
 import { LocalizationManager } from '../util/LocalizationManager';
 import { stripIndents } from '../util/Util';
@@ -64,7 +65,8 @@ export class Vesalius extends Client {
     this.moduleManager = new ModuleManager(this);
     
     const coreModule = new CoreModule(this);
-    this.moduleManager.addModule(coreModule);
+    const debugModule = new DebugModule(this);
+    this.moduleManager.addModule(coreModule, debugModule);
 
     const discordConfigSpec = new ConfigSpec()
       .addConfig('public_key', createConfig('').addComment('Public key of the discord application'))
