@@ -3,6 +3,7 @@ import { createWriteStream, existsSync, lstatSync, mkdirSync, readFileSync, writ
 import * as json5 from 'json5';
 import { coloredLog, getLoggerLevelName, Logger, LoggerLevel } from 'logerian';
 import { Config, Vesalius } from './struct/Vesalius';
+import { isHeartbeatLog } from './util/Util';
 
 if (!existsSync('log')) {
   mkdirSync('log');
@@ -38,6 +39,8 @@ if (process.argv.slice(2).includes('--generate-config') || !existsSync('../confi
   process.exit(0);
 }
 
+process.env.VERSION = require('../package.json').version;
+
 let configString = readFileSync('../config.json5').toString();
 const config: Config = json5.parse(configString);
 
@@ -47,12 +50,13 @@ const logger = new Logger({
       level: LoggerLevel.DEBUG,
       stream: createWriteStream('../log/' + Date.now() + '-debug.txt'),
       prefix: (level: LoggerLevel) => `[${new Date().toISOString()}] [${getLoggerLevelName(level)}] `,
+      filter: (message, messageStripped) => config.disableHeartbeatLogs && !isHeartbeatLog(messageStripped.toString()),
     },
     {
       level: config.logLevel ?? LoggerLevel.DEBUG,
       stream: process.stdout,
       prefix: coloredLog,
-      filter: (message, messageStripped) => config.disableHeartbeatLogs && !/^\[\d\d\:\d\d\:\d\d\] \[DEBUG\] \[WS => Shard \d+\] (\[HeartbeatTimer\] Sending a heartbeat.|Heartbeat acknowledged, latency of \d+ms.)$/.test(messageStripped.toString()),
+      filter: (message, messageStripped) => config.disableHeartbeatLogs && !isHeartbeatLog(messageStripped.toString()),
     },
   ]
 });

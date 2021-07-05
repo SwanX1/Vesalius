@@ -26,11 +26,28 @@
   "command.help.info.name": "Help",
   "command.help.info.description": " \n\
     Lists commands and shows usage for them. \n\
-    Note: This feature is still WIP. \n\
   ",
   "command.help.info.summary": "Lists commands and shows usage for them.",
   "command.help.info.usage": " \n\
     `{prefix}help` - Shows a list of commands and their summaries. \n\
     `{prefix}help <command>` - Shows a specified command's description and usage. \n\
   ",
+
+  // Info command
+  "command.info.info.name": "Info",
+  "command.info.info.description": " \n\
+    Shows meta information about the bot. \n\
+    Information that's listed: host OS and arch, bot's version, uptime, GitHub link, issue tracker, and invite link.\n\
+  ",
+  "command.info.info.summary": "Shows information about the bot.",
+  "command.info.info.usage": "`{prefix}info`",
+  "command.info.title": "About the Bot",
+  "command.info.fields.host_system": "Host System",
+  "command.info.fields.bot_version": "Bot's Version",
+  "command.info.fields.uptime": "Uptime",
+  "command.info.fields.github": "GitHub",
+  "command.info.fields.issue_tracker": "Issue Tracker",
+  "command.info.fields.invite.title": "Invite Link",
+  "command.info.fields.invite.content": "Click here",
+  "command.info.fields.node_version": "Running on NodeJS version {version}",
 }

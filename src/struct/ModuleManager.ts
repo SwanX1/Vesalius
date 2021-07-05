@@ -32,6 +32,7 @@ export class ModuleManager {
   }
 
   public loadModules(config: { [module_id: string]: ModuleConfig; }): void {
+    this.client.emit('debug', '[ModuleManager] Loading modules...');
     this.modules.forEach(m => {
       m.load(config[m.id]);
       if (!m.enabled) {

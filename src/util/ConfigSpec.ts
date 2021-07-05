@@ -45,14 +45,25 @@ export class ConfigSpec {
       for (const [key, value] of existing.configs) {
         existingObj[key] = value;
       }
+
+      console.log({ obj, existingObj });
       
       let result = '{';
 
       for (const key in obj) {
         if (!Object.prototype.hasOwnProperty.call(obj, key)) continue;
         const value = obj[key];
-        if (existingObj[key]) value.setValue(existingObj[key].getValue());
-        result += '\n' + indentString(value.toString(getLastPartOf(key, '.'), 2), 2);
+        const existingValue = existingObj[key];
+        if (existingValue) {
+          if (existingValue.isConfigSpec()) {
+            result += '\n' + indentString(value.toStringSpec(getLastPartOf(key, '.'), existingValue.getValue()), 2);
+          } else {
+            value.setValue(existingValue.getValue());
+            result += '\n' + indentString(value.toString(getLastPartOf(key, '.'), 2), 2);
+          }
+        } else {
+          result += '\n' + indentString(value.toString(getLastPartOf(key, '.'), 2), 2);
+        }
       }
 
       if (result !== '{') {
@@ -113,6 +124,23 @@ export class Config<T> {
     } else {
       result += `\n${key}: ${json5.stringify(this.value, null, spaces)},`;
     }
+    return result.trim();
+  }
+
+
+
+  public isConfigSpec(): this is Config<ConfigSpec> {
+    return this.value instanceof ConfigSpec;
+  }
+
+  public toStringSpec(key: string, existing: ConfigSpec): string {
+    if (!this.isConfigSpec()) throw new TypeError('Value is not a config spec!');
+    let result = '';
+    for (const comment of this.comments) {
+      result += `\n// ${comment}`;
+    }
+    key = /^[a-z\$_][a-z0-9\$_]*$/i.test(key) ? key : json5.stringify(key);
+    result += `\n${key}: ${this.value.getJson5(existing)},`;
     return result.trim();
   }
 }

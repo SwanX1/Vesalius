@@ -76,7 +76,6 @@ export class Vesalius extends Client {
     this.moduleManager.buildConfigSpec(moduleConfigSpec);
     
     this.configSpec = new ConfigSpec()
-      .addConfig('defaultPrefix', createConfig('!'))
       .addConfig('logLevel',
         createConfig(1)
           .addComment(stripIndents`
@@ -90,8 +89,9 @@ export class Vesalius extends Client {
           `)
       )
       .addConfig('disableHeartbeatLogs', createConfig(true).addComment('DEBUG LOGS ONLY: Disables heartbeat logs'))
-      .addConfig('modules', createConfig(moduleConfigSpec).addComment('Module specific configs'))
-      .addConfig('discord', createConfig(discordConfigSpec).addComment('Discord API related settings'));
+      .addConfig('defaultPrefix', createConfig('!'))
+      .addConfig('discord', createConfig(discordConfigSpec).addComment('Discord API related settings'))
+      .addConfig('modules', createConfig(moduleConfigSpec).addComment('Module specific configs'));
   }
 
   setLogger(logger: Logger): this {

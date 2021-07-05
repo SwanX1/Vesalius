@@ -129,3 +129,14 @@ export function indentString(str: string, spaces: number, indentWith = ' '): str
   }
   return result;
 }
+
+export function secondsToHHMMSS(seconds: number): string {
+  const hrs = Math.floor(seconds / 3600);
+  const mins = Math.floor((seconds / 60) % 60);
+  const secs = Math.floor(seconds % 60);
+  return `${hrs}h ${mins}m ${secs}s`;
+}
+
+export function isHeartbeatLog(message: string): boolean {
+  return /^\[(\d\d\:\d\d\:\d\d|\d\d\d\d\-\d\d\-\d\dT\d\d:\d\d:\d\d.\d\d\dZ)\] \[DEBUG\] \[WS => Shard \d+\] (\[HeartbeatTimer\] Sending a heartbeat.|Heartbeat acknowledged, latency of \d+ms.)$/.test(message);
+}
