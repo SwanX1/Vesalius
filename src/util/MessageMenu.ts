@@ -157,6 +157,7 @@ export class MessageMenu {
   private generateReactionCallback(m: MenuReaction, t?: NodeJS.Timeout): (...args: ClientEvents['messageReactionAdd']) => void {
     return async (r: MessageReaction, u: User | PartialUser) => {
       const [reaction, user] = await Promise.all([r.fetch(), u.fetch()]);
+      if (this.message?.id !== r.message.id) return;
       let shouldExecute = m.filter(reaction, user);
       if (shouldExecute instanceof Promise) {
         shouldExecute = await shouldExecute;
