@@ -3,6 +3,7 @@ import { DMChannel, Message, NewsChannel, PermissionString, TextChannel } from '
 import { HelpInfo } from '../modules/core/commands/HelpCommand';
 import { ConfigSpec } from '../util/ConfigSpec';
 import { ParsedArgs } from '../util/ParsedArgs';
+import { Base, BaseConfig } from './Base';
 import { Vesalius } from './Vesalius';
 
 export interface CommandOptions {
@@ -13,16 +14,17 @@ export interface CommandOptions {
   help: HelpInfo;
 }
 
-export interface CommandConfig { }
+export interface CommandConfig extends BaseConfig { }
 
-export abstract class Command {
+export abstract class Command extends Base {
   public requiredBotPermissions: PermissionString[];
   public requiredPermissions: PermissionString[];
   public fetchMessage: boolean;
   public alias: string[];
   public help: HelpInfo;
 
-  constructor(public id: string, public client: Vesalius, options: CommandOptions) {
+  constructor(id: string, client: Vesalius, options: CommandOptions) {
+    super(id, client);
     this.client.emit('debug', chalk`[${client.commandManager.constructor.name}] Constructing {yellow '${this.constructor.name}'}`);
     this.requiredBotPermissions = options.requiredBotPermissions ?? [];
     this.requiredPermissions = options.requiredPermissions ?? [];
@@ -41,10 +43,10 @@ export abstract class Command {
       (message.channel as TextChannel | NewsChannel).permissionsFor(message.author).has(this.requiredBotPermissions)
     );
   }
-
-  public buildConfigSpec(spec: ConfigSpec): void { }
   
-  public load(config: CommandConfig) { }
+  public override load(config: CommandConfig) {
+    super.load(config);
+  }
 
-  public abstract exec(message: Message, args: ParsedArgs): any;
+  public abstract override exec(message: Message, args: ParsedArgs): any;
 }

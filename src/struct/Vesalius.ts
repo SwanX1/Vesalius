@@ -7,6 +7,7 @@ import { ConfigSpec, createConfig } from '../util/ConfigSpec';
 import { LocalizationManager } from '../util/LocalizationManager';
 import { stripIndents } from '../util/Util';
 import { CommandManager } from './CommandManager';
+import { ListenerManager } from './ListenerManager';
 import { ModuleConfig } from './Module';
 import { ModuleManager } from './ModuleManager';
 
@@ -31,6 +32,7 @@ export class Vesalius extends Client {
   public locale: LocalizationManager;
   moduleManager: ModuleManager;
   public configSpec: ConfigSpec;
+  listenerManager: ListenerManager;
 
   constructor(options: ClientOptions, logger?: Logger) {
     super(options);
@@ -60,6 +62,7 @@ export class Vesalius extends Client {
     this.locale = new LocalizationManager(this);
     this.locale.readAllLocalizations();
 
+    this.listenerManager = new ListenerManager(this);
     this.commandManager = new CommandManager(this);
 
     this.moduleManager = new ModuleManager(this);

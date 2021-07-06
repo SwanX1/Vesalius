@@ -3,6 +3,7 @@ import { Collection } from 'discord.js';
 import { ConfigSpec } from '../util/ConfigSpec';
 import { isObject } from '../util/Util';
 import { Command, CommandConfig } from './Command';
+import { Listener, ListenerConfig } from './Listener';
 import { Vesalius } from './Vesalius';
 
 export interface ModuleOptions {
@@ -12,12 +13,14 @@ export interface ModuleOptions {
 export interface ModuleConfig {
   enabled: boolean;
   commands: { [key: string]: CommandConfig };
+  listeners: { [key: string]: ListenerConfig };
 }
 
 export abstract class Module {
   public dependencies: string[] = [];
   public enabled: boolean = false;
   public commands: Collection<string, Command> = new Collection();
+  public listeners: Collection<string, Listener> = new Collection();
 
   constructor(public id: string, public client: Vesalius, options: ModuleOptions) {
     this.dependencies = options.dependencies ?? [];
@@ -27,6 +30,12 @@ export abstract class Module {
   public addCommand(...commands: Command[]): void {
     commands.forEach(command => {
       this.commands.set(command.id, command);
+    });
+  }
+
+  public addListener(...listeners: Listener[]): void {
+    listeners.forEach(listener => {
+      this.listeners.set(listener.id, listener);
     });
   }
 
@@ -41,6 +50,16 @@ export abstract class Module {
       }
     });
     spec.addConfig('commands', commandSpec);
+
+    const listenerSpec = new ConfigSpec();
+    this.listeners.forEach((listener, id) => {
+      const specificListenerSpec = new ConfigSpec();
+      listener.buildConfigSpec(specificListenerSpec);
+      if (specificListenerSpec.configs.size !== 0) {
+        listenerSpec.addConfig(id, specificListenerSpec);
+      }
+    });
+    spec.addConfig('listeners', listenerSpec);
   }
   
   public load(config: ModuleConfig): void {
@@ -55,10 +74,16 @@ export abstract class Module {
         }
       }
       this.commands.forEach(command => this.client.commandManager.loadCommand(command));
-    }
-  }
 
-  public static getDefaultConfig(): ModuleConfig {
-    return { enabled: true, commands: {} };
+      for (const configid in config.listeners) {
+        if (!Object.prototype.hasOwnProperty.call(config.listeners, configid)) continue;
+        const commandConfig = config.listeners[configid];
+        if (this.listeners.get(configid)) {
+          this.client.emit('debug', chalk`[${this.constructor.name}] Loading {yellow '${configid}'} listener's config...`);
+          this.listeners.get(configid).load(commandConfig);
+        }
+      }
+      this.listeners.forEach(listener => this.client.listenerManager.loadListener(listener));
+    }
   }
 }
