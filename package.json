@@ -4,7 +4,7 @@
   "main": "dist/index.js",
   "esnext": "src/index.ts",
   "author": "SwanX1 <karliscern@gmail.com>",
-  "license": "Apache-2.0",
+  "license": "AGPL-3.0-or-later",
   "scripts": {
     "start": "node .",
     "build": "tsc",
