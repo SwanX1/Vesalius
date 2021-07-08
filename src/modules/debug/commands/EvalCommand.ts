@@ -21,8 +21,8 @@ export class EvalCommand extends Command {
     });
   }
   
-  public override shouldExecute(message: Message): boolean {
-    return super.shouldExecute(message) && this.parentModule.allowedUsers.includes(message.author.id);
+  public override shouldExecute(message: Message, args: ParsedArgs): boolean {
+    return super.shouldExecute(message, args) && this.parentModule.allowedUsers.includes(message.author.id);
   }
 
   public async exec(message: Message, args: ParsedArgs): Promise<void> {
