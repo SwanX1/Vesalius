@@ -3,3 +3,4 @@ dist/
 log/
 config.json5
 deploy.pid
+scripts/db_updates/.last

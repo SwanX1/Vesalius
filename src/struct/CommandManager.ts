@@ -36,10 +36,12 @@ export class MessageListener extends Listener {
   }
 
   public async exec(message: Message): Promise<void> {
-    const args: ParsedArgs = ParsedArgs.parse(message, this.client.defaultPrefix);
+    const prefix = await this.client.database.getPrefix(message.guild.id);
+    const args: ParsedArgs = ParsedArgs.parse(message, prefix);
+    if (args.prefix !== prefix) return;
     const command: Command = this.commandManager.commands.find(command => command.alias.includes(args.command));
     if (!command) return;
-    if (!command.shouldExecute(message)) return;
+    if (!command.shouldExecute(message, args)) return;
     if (command.fetchMessage) await message.fetch();
     command.exec(message, args);
   }

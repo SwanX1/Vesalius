@@ -86,5 +86,7 @@ for (const signal of ["SIGABRT", "SIGHUP", "SIGINT", "SIGQUIT", "SIGTERM", "SIGU
   process.on(signal, () => {
     logger.info('Exiting...');
     client.destroy();
+    // @ts-expect-error pool is private
+    client.database.pool.end();
   });
 }

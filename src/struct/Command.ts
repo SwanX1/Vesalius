@@ -33,17 +33,17 @@ export abstract class Command extends Base {
     this.help = options.help;
   }
 
-  public shouldExecute(message: Message): boolean {
+  public shouldExecute(message: Message, args: ParsedArgs): boolean {
     return (
       // Message channel is not a DM channel
       !(message.channel instanceof DMChannel) &&
       // Bot has required permissions
       (message.channel as TextChannel | NewsChannel).permissionsFor(this.client.user).has(this.requiredBotPermissions) &&
       // Message author has required permissions
-      (message.channel as TextChannel | NewsChannel).permissionsFor(message.author).has(this.requiredBotPermissions)
+      (message.channel as TextChannel | NewsChannel).permissionsFor(message.author).has(this.requiredPermissions)
     );
   }
-  
+
   public override load(config: CommandConfig) {
     super.load(config);
   }

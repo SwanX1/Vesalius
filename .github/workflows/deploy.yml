@@ -24,5 +24,7 @@ jobs:
             cd ${{ secrets.PROJECT_PATH }}
             git fetch --prune --depth=1 --force --verbose origin
             git checkout --force origin/`echo '${{ github.ref }}' | sed 's/.*\///'`
-            bash ./deploy.sh
+            bash ./scripts/setup.sh
+            node ./scripts/updatedatabase.js
+            bash ./scripts/deploy.sh
           "

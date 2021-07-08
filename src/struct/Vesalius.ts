@@ -7,6 +7,7 @@ import { ConfigSpec, createConfig } from '../util/ConfigSpec';
 import { LocalizationManager } from '../util/LocalizationManager';
 import { stripIndents } from '../util/Util';
 import { CommandManager } from './CommandManager';
+import { Database, DatabaseConfig } from './Database';
 import { ListenerManager } from './ListenerManager';
 import { ModuleConfig } from './Module';
 import { ModuleManager } from './ModuleManager';
@@ -15,6 +16,7 @@ export interface Config {
   defaultPrefix: string;
   logLevel: LoggerLevel;
   disableHeartbeatLogs: boolean;
+  database: DatabaseConfig;
   modules: { [module_id: string]: ModuleConfig; };
   discord: {
     public_key: string;
@@ -30,9 +32,10 @@ export class Vesalius extends Client {
   public defaultPrefix: string = '?';
   public commandManager: CommandManager;
   public locale: LocalizationManager;
-  moduleManager: ModuleManager;
+  public moduleManager: ModuleManager;
   public configSpec: ConfigSpec;
-  listenerManager: ListenerManager;
+  public listenerManager: ListenerManager;
+  public database = new Database();
 
   constructor(options: ClientOptions, logger?: Logger) {
     super(options);
@@ -80,6 +83,9 @@ export class Vesalius extends Client {
     const moduleConfigSpec = new ConfigSpec();
     this.moduleManager.buildConfigSpec(moduleConfigSpec);
     
+    const databaseConfigSpec = new ConfigSpec();
+    this.database.buildConfigSpec(databaseConfigSpec);
+
     this.configSpec = new ConfigSpec()
       .addConfig('logLevel',
         createConfig(1)
@@ -94,7 +100,7 @@ export class Vesalius extends Client {
           `)
       )
       .addConfig('disableHeartbeatLogs', createConfig(true).addComment('DEBUG LOGS ONLY: Disables heartbeat logs'))
-      .addConfig('defaultPrefix', createConfig('!'))
+      .addConfig('database', createConfig(databaseConfigSpec).addComment('Database connection settings'))
       .addConfig('discord', createConfig(discordConfigSpec).addComment('Discord API related settings'))
       .addConfig('modules', createConfig(moduleConfigSpec).addComment('Module specific configs'));
   }
@@ -106,6 +112,7 @@ export class Vesalius extends Client {
 
   load(config: Config): void {
     this.defaultPrefix = config.defaultPrefix ?? this.defaultPrefix;
+    this.database.load(config.database);
     this.moduleManager.loadModules(config.modules);
   }
 }

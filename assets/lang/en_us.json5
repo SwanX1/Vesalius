@@ -65,8 +65,22 @@
   // Reload Locale command
   "command.reload-locale.processing": "Reloading...",
   "command.reload-locale.done": "Reloaded all localizations {ms}ms!",
-  "command.reload-locale.info.name": "reload-locale",
+  "command.reload-locale.info.name": "Reload Locale",
   "command.reload-locale.info.description": "Reloads all localizations.\nThis is a restricted command, cannot be viewed with the help command.",
   "command.reload-locale.info.summary": "Reloads all localizations.",
   "command.reload-locale.info.usage": "`{prefix}reload-locale`",
+
+  // Prefix command
+  "command.prefix.processing": "Processing...",
+  "command.prefix.set": "Changed the prefix from `{oldPrefix}` to `{newPrefix}`",
+  "command.prefix.fetch": "The prefix is `{prefix}`",
+  "command.prefix.error.too_long": "The prefix `{prefix}` is too long! It must be at most 16 characters long.",
+  "command.prefix.error.insufficient_permissions": "You do not have sufficient permissions to do this!\nDo `{prefix}help prefix` for more info.",
+  "command.prefix.info.name": "Prefix",
+  "command.prefix.info.description": "Sets the bot's prefix for the server.\nThis command is only available for server administrators, and users with the `Manage Server` permission.",
+  "command.prefix.info.summary": "Sets the bot's prefix for the server.",
+  "command.prefix.info.usage": "\
+    `{prefix}prefix`\n\
+    `{prefix}prefix <prefix>`\n\
+  ",
 }

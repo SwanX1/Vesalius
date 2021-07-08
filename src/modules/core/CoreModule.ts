@@ -5,6 +5,7 @@ import { ConfigSpec, createConfig } from '../../util/ConfigSpec';
 import { HelpCommand } from './commands/HelpCommand';
 import { InfoCommand } from './commands/InfoCommand';
 import { PingCommand } from './commands/PingCommand';
+import { PrefixCommand } from './commands/PrefixCommand';
 
 export class CoreModule extends Module {
   constructor(client: Vesalius) {
@@ -14,6 +15,7 @@ export class CoreModule extends Module {
       new PingCommand(this.client),
       new HelpCommand(this.client),
       new InfoCommand(this.client),
+      new PrefixCommand(this.client),
     );
   }
 

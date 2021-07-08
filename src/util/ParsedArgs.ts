@@ -50,7 +50,7 @@ export class ParsedArgs {
     const args: string[] = ParsedArgs.getArguments(message.content.slice(prefix.length, message.content.length));
 
     return new ParsedArgs({
-      prefix,
+      prefix: message.content.slice(0, prefix.length),
       command: args.shift(),
       args,
       rawArgs: args.join(' '),
@@ -59,7 +59,7 @@ export class ParsedArgs {
 
   public static getArguments(body: string): string[] {
     const args: string[] = [];
-    let s = body.trim();
+    let s = body;
 
     while (s.length > 0) {
       let arg: string;

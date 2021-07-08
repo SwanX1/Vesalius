@@ -29,9 +29,14 @@ export class HelpCommand extends Command {
   }
 
   public async exec(message: Message, args: ParsedArgs): Promise<void> {
-    if (args.subcommand) {
-      let command = this.client.commandManager.commands.get(args.subcommand);
-      if (command.help.hide) command = undefined;
+    if (args.rawArgs) {
+      let command = this.client.commandManager.commands.find(
+        command =>
+          command.alias.includes(args.rawArgs.toLowerCase()) ||
+          command.alias.includes(args.subcommand.toLowerCase()) ||
+          command.help.name === args.rawArgs.toLowerCase()
+      );
+      if (command?.help?.hide) command = undefined;
       if (command) {
         const help = copyObject(command.help);
         for (const prop of ['description', 'name', 'summary', 'usage'] as (Exclude<keyof HelpInfo, 'hide'>)[]) {
