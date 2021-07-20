@@ -7,7 +7,7 @@ import { ConfigSpec, createConfig } from '../util/ConfigSpec';
 import { LocalizationManager } from '../util/LocalizationManager';
 import { stripIndents } from '../util/Util';
 import { CommandManager } from './CommandManager';
-import { Database, DatabaseConfig } from './Database';
+import { Database, DatabaseConfig } from './database/Database';
 import { ListenerManager } from './ListenerManager';
 import { ModuleConfig } from './Module';
 import { ModuleManager } from './ModuleManager';

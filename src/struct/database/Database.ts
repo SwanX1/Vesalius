@@ -1,8 +1,8 @@
 import { Collection } from 'discord.js';
 import { Pool, QueryConfig, QueryResult, QueryResultRow } from 'pg';
-import { ConfigSpec, createConfig } from '../util/ConfigSpec';
-import { copyObject } from '../util/Util';
-import { Base, BaseConfig, HasConfig } from './Base';
+import { ConfigSpec, createConfig } from '../../util/ConfigSpec';
+import { copyObject } from '../../util/Util';
+import { Base, BaseConfig, HasConfig } from '../Base';
 
 export interface DatabaseConfig extends BaseConfig {
   defaultPrefix: string;
@@ -75,57 +75,58 @@ export class Database implements HasConfig {
   }
 
   public async getPrefix(guildId: string): Promise<string> {
-    await this.getGuild(guildId);
-    if (!this.cache.guilds.get(guildId).prefix) {
-      const prefix = (await this.query<Pick<DBGuild, 'prefix'>>(`
-        SELECT prefix FROM guilds
-        WHERE id=$1
-        LIMIT 1
-      `, [guildId])).rows[0]?.prefix;
-      this.cache.guilds.get(guildId).prefix = prefix;
+    const guild = await this.getGuild(guildId);
+    if (!guild) {
+      return this.defaultPrefix;
+    }
+    if (!guild.prefix) {
+      this.cache.guilds.get(guildId).prefix = (await this.getGuild(guildId, true)).prefix;
     }
 
-    return this.cache.guilds.get(guildId).prefix ?? this.defaultPrefix;
+    return guild.prefix ?? this.defaultPrefix;
   }
 
-  public async setPrefix(guildId: string, prefix: string): Promise<void> {
+  public async setPrefix(guildId: string, prefix: string): Promise<boolean> {
     if (prefix.length > 16) throw new RangeError('Prefix cannot be more than 16 characters long!');
-    if (!(await this.getGuild(guildId))) {
-      await this.setGuild(guildId);
-    }
 
     if (await this.getPrefix(guildId) !== prefix) {
       await this.query(`
         UPDATE guilds
         SET prefix=$1
         WHERE id=$2
-        RETURNING NULL
       `, [prefix, guildId]);
       await this.getGuild(guildId, true);
+      return true;
+    } else {
+      return false;
     }
-
-    return;
   }
 
   public async getGuild(guildId: string, force = false): Promise<DBGuild | undefined> {
     if (force || !this.cache.guilds.get(guildId)) {
-      const guild = (await this.query<DBGuild>(`
+      let guild: QueryResult<DBGuild> | DBGuild = await this.query<DBGuild>(`
         SELECT * FROM guilds
         WHERE id=$1
         LIMIT 1
-      `, [guildId])).rows[0];
+      `, [guildId]);
+      if (guild.rowCount === 0) {
+        return undefined;
+      }
+      guild = guild.rows[0];
       this.cache.guilds.set(guildId, copyObject(guild));
     }
     return this.cache.guilds.get(guildId);
   }
 
-  public async setGuild(guildId: string): Promise<void> {
+  public async createGuild(guildId: string): Promise<boolean> {
     if (!(await this.getGuild(guildId))) {
       await this.query<DBGuild>(`
         INSERT INTO guilds(id)
         VALUES ($1)
       `, [guildId]);
+      return true;
+      } else {
+      return false;
     }
-    return;
   }
 }
